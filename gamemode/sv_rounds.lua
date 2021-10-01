@@ -1,6 +1,20 @@
 
 util.AddNetworkString("SetRound")
 util.AddNetworkString("DeclareWinner")
+util.AddNetworkString("ChangeMaxLength")
+
+concommand.Add("mu_update_length", function(ply, cmd, args, argStr)
+	if !ply:IsUserGroup( "superadmin" ) then
+		return
+	end
+	local seconds = tonumber(args[1])
+	if seconds != nil then
+		if seconds != -1 then
+			seconds = seconds + GAMEMODE:GetRoundTime()
+		end
+		GAMEMODE:ChangeRoundMaxLength(seconds)
+	end
+end)
 
 GM.RoundStage = 0
 GM.RoundCount = 0
@@ -35,6 +49,14 @@ function GM:CheckRoundTime()
 		-- Still got time
 		return true
 	end
+end
+
+function GM:ChangeRoundMaxLength(seconds)
+	net.Start("ChangeMaxLength")
+	net.WriteInt(seconds, 32)
+	net.Broadcast()
+
+	self.RoundSettings.RoundMaxLength = seconds
 end
 
 function GM:SetRound(round)

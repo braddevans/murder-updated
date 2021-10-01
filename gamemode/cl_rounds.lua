@@ -18,6 +18,11 @@ function GM:GetRoundTime()
 	return CurTime() - started
 end
 
+net.Receive("ChangeMaxLength", function (length)
+	local time = net.ReadInt(32)
+	GAMEMODE.RoundSettings.RoundMaxLength = time
+end)
+
 net.Receive("SetRound", function (length)
 	local r = net.ReadUInt(8)
 	local start = net.ReadDouble()
