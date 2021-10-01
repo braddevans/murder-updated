@@ -4,13 +4,37 @@ util.AddNetworkString("DeclareWinner")
 
 GM.RoundStage = 0
 GM.RoundCount = 0
+GM.RoundStarted = 0
 if GAMEMODE then
 	GM.RoundStage = GAMEMODE.RoundStage
 	GM.RoundCount = GAMEMODE.RoundCount
+	GM.RoundStarted = GAMEMODE.RoundStarted
 end
 
 function GM:GetRound()
 	return self.RoundStage or 0
+end
+
+function GM:GetRoundTime()
+	local started = self.RoundStarted or 0
+	return CurTime() - self.RoundStarted
+end
+
+function GM:CheckRoundTime()
+	local max = self.RoundSettings.RoundMaxLength or 0
+	if max == -1 then
+		-- Disabled
+		return true
+	end
+	local time = self:GetRoundTime()
+	time = max - time
+	if time <= 0 then
+		-- Ran out of time
+		return false
+	else
+		-- Still got time
+		return true
+	end
 end
 
 function GM:SetRound(round)
@@ -22,6 +46,7 @@ function GM:SetRound(round)
 	self.RoundSettings.ShowAdminsOnScoreboard = self.ShowAdminsOnScoreboard:GetBool()
 	self.RoundSettings.AdminPanelAllowed = self.AdminPanelAllowed:GetBool()
 	self.RoundSettings.ShowSpectateInfo = self.ShowSpectateInfo:GetBool()
+	self.RoundSettings.RoundMaxLength = self.RoundMaxLength:GetInt()
 
 	self:NetworkRound()
 end
@@ -36,6 +61,7 @@ function GM:NetworkRound(ply)
 		net.WriteUInt(self.RoundSettings.ShowAdminsOnScoreboard and 1 or 0, 8)
 		net.WriteUInt(self.RoundSettings.AdminPanelAllowed and 1 or 0, 8)
 		net.WriteUInt(self.RoundSettings.ShowSpectateInfo and 1 or 0, 8)
+		net.WriteInt(self.RoundSettings.RoundMaxLength, 32)
 	else
 		net.WriteUInt(0, 8)
 	end
@@ -135,6 +161,12 @@ function GM:RoundCheckForWin()
 
 	// is the murderer dead?
 	if !murderer:Alive() then
+		self:EndTheRound(2, murderer)
+		return
+	end
+
+	-- Ran out of time?
+	if !self:CheckRoundTime() then
 		self:EndTheRound(2, murderer)
 		return
 	end
@@ -344,6 +376,8 @@ function GM:StartNewRound()
 	self.MurdererLastKill = CurTime()
 
 	self:SetRound(self.Round.Playing)
+	self.RoundStarted = CurTime()
+
 	hook.Call("OnStartRound")
 end
 

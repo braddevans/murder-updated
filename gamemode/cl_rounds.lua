@@ -2,6 +2,7 @@
 GM.RoundStage = 0
 GM.LootCollected = 0
 GM.RoundSettings = {}
+GM.RoundStarted = 0
 if GAMEMODE then
 	GM.RoundStage = GAMEMODE.RoundStage
 	GM.LootCollected = GAMEMODE.LootCollected
@@ -10,6 +11,11 @@ end
 
 function GM:GetRound()
 	return self.RoundStage or 0
+end
+
+function GM:GetRoundTime()
+	local started = self.RoundStarted or 0
+	return CurTime() - started
 end
 
 net.Receive("SetRound", function (length)
@@ -24,6 +30,7 @@ net.Receive("SetRound", function (length)
 		GAMEMODE.RoundSettings.ShowAdminsOnScoreboard = net.ReadUInt(8) != 0
 		GAMEMODE.RoundSettings.AdminPanelAllowed = net.ReadUInt(8) != 0
 		GAMEMODE.RoundSettings.ShowSpectateInfo = net.ReadUInt(8) != 0
+		GAMEMODE.RoundSettings.RoundMaxLength = net.ReadInt(32)
 	end
 
 	if r == GAMEMODE.Round.RoundStarting then
@@ -38,6 +45,7 @@ net.Receive("SetRound", function (length)
 			end
 		end)
 		GAMEMODE.LootCollected = 0
+		GAMEMODE.RoundStarted = CurTime()
 	end
 end)
 
