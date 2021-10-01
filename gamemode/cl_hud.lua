@@ -48,6 +48,14 @@ surface.CreateFont( "MersDeathBig" , {
 	italic = false
 })
 
+surface.CreateFont( "TimerText" , {
+	font = "closecaption_bold",
+	size = math.ceil(baseSize),
+	weight = 500,
+	antialias = true,
+	italic = false
+})
+
 local function drawTextShadow(t,f,x,y,c,px,py)
 	color_black.a = c.a
 	draw.SimpleText(t,f,x + 1,y + 1,color_black,px,py)
@@ -352,6 +360,7 @@ function GM:DrawGameHUD(ply)
 			local minutes = 0
 			local seconds = 0
 			local s = ""
+			local font = ""
 
 			if time > 0 then
 				minutes = math.floor(time / 60)
@@ -364,7 +373,14 @@ function GM:DrawGameHUD(ply)
 			else
 				s = 0
 			end
-			drawTextShadow(s, "MersRadial", ScrW() - 20, 10, Color(190, 20, 20), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+
+			if baseSize >= 40 then
+				font = "MersRadial"
+			else
+				font = "TimerText"
+			end
+
+			drawTextShadow(s, font, ScrW() - 20, 10, Color(190, 20, 20), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 		end
 	end
 end
