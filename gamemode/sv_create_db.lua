@@ -1,4 +1,4 @@
-function GM:ensureTablesExist()
+function GM:EnsureTablesExist()
 	if (sql.TableExists("mu_maps") && sql.TableExists("mu_models") && sql.TableExists("mu_spawns") && sql.TableExists("mu_loots")) then
 		Msg("tables already exist !")
 	else

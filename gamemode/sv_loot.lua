@@ -23,7 +23,7 @@ function GM:LoadLootModels()
 	local lootResult = sql.Query("SELECT alias,file FROM mu_models")
 
 	if lootResult ~= false then
-		PrintTable(lootResult)
+		-- PrintTable(lootResult)
 		for k,v in pairs(lootResult) do
 			LootModels[v.alias] = v.file
 		end
@@ -279,7 +279,21 @@ concommand.Add("mu_whats_this", function (ply, com, args, full)
 	print(ent)
 	if IsValid(ent) then
 		local data = ent:GetKeyValues()
-		print(data.classname, data.hammerid, ent:GetModel())
+		local name = ent:GetName()
+		local model = ent:GetModel()
+		local pos = ent:GetPos()
+		local angle = ent:GetAngles()
+		local c = ChatText()
+		c:Add(name)
+		c:Add("Model: ")
+		c:Add(model, Color(255,125,255))
+		c:Add("\nPos: ")
+		c:Add(pos.x .. ", " .. pos.y .. ", " .. pos.z , Color(200,0,0))
+		c:Add("\nAngle: ")
+		c:Add(angle.x .. ", " .. angle.y .. ", " .. angle.z, Color(255,244,0))
+		c:Add("\nClass: " .. data.classname)
+		c:Add("\nHammer_ID: " .. data.hammerid)
+		c:Send(ply)
 	end
 end)
 

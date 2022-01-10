@@ -57,7 +57,7 @@ GM.AdminPanelAllowed = CreateConVar("mu_allow_admin_panel", 1, bit.bor(FCVAR_NOT
 GM.ShowSpectateInfo = CreateConVar("mu_show_spectate_info", 1, bit.bor(FCVAR_NOTIFY), "Should show players name and color to spectators" )
 
 function GM:Initialize()
-	self:ensureTablesExist()
+	self:EnsureTablesExist()
 	self:LoadSpawns()
 	self.DeathRagdolls = {}
 	self:StartNewRound()
