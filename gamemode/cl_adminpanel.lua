@@ -90,6 +90,7 @@ local function addPlayerItem(self, mlist, ply, pteam)
 	mlist:AddItem(but)
 end
 
+
 local function doPlayerItems(self, mlist, pteam)
 
 	for k, ply in pairs(team.GetPlayers(pteam)) do
@@ -195,7 +196,8 @@ net.Receive("mu_adminpanel_details", function (ply, length)
 	local json = net.ReadString()
 	local tab = util.JSONToTable(json)
 
-	playerData = tab
+	playerData = tab["playerData"]
+	lootData = tab["lootData"]
 	-- PrintTable(tab)
 end)
 

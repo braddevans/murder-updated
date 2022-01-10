@@ -121,7 +121,7 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 
 	ply:UnMurdererDisguise()
 
-	ply:Freeze(false) // why?, *sigh*
+	ply:Freeze(false) --why?, *sigh*
 	ply:CreateRagdoll()
 
 	local ent = ply:GetNWEntity("DeathRagdoll")
