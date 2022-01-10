@@ -20,7 +20,7 @@ local function addPlayerItem(self, mlist, ply, pteam)
 	function but:Paint(w, h)
 		local showAdmins = GAMEMODE.RoundSettings.ShowAdminsOnScoreboard
 
-		if IsValid(ply) && showAdmins && ply:IsAdmin() then
+		if IsValid(ply) and showAdmins and ply:IsAdmin() then
 			surface.SetDrawColor(Color(150,50,50))
 		else
 			surface.SetDrawColor(team.GetColor(pteam))
@@ -33,10 +33,10 @@ local function addPlayerItem(self, mlist, ply, pteam)
 		surface.SetDrawColor(color_black)
 		surface.DrawOutlinedRect(0, 0, w, h)
 
-		if IsValid(ply) && ply:IsPlayer() then
+		if IsValid(ply) and ply:IsPlayer() then
 			local s = 0
 
-			if showAdmins && ply:IsAdmin() then
+			if showAdmins and ply:IsAdmin() then
 				surface.SetMaterial(admin)
 				surface.SetDrawColor(color_white)
 				surface.DrawTexturedRect(s + 4, h / 2 - 16, 32, 32)
@@ -55,8 +55,6 @@ local function addPlayerItem(self, mlist, ply, pteam)
 
 			draw.DrawText(ply:Nick(), "ScoreboardPlayer", s + 11, 9, color_black, 0)
 			draw.DrawText(ply:Nick(), "ScoreboardPlayer", s + 10, 8, color_white, 0)
-
-			
 		end
 	end
 	function but:DoClick()
@@ -70,34 +68,32 @@ function GM:DoScoreboardActionPopup(ply)
 	local actions = DermaMenu()
 
 	if ply:IsAdmin() then
-		local admin = actions:AddOption(translate.scoreboardActionAdmin)
-		admin:SetIcon("icon16/shield.png")
+		local admin_option = actions:AddOption(translate.scoreboardActionAdmin)
+		admin_option:SetIcon("icon16/shield.png")
 	end
 
-	if ply != LocalPlayer() then
-		if !ply:IsBot() then
-			local t = translate.scoreboardActionMute
-			if ply:IsMuted() then
-				t = translate.scoreboardActionUnmute
+	if ply != LocalPlayer() and !ply:IsBot() then
+		local t = translate.scoreboardActionMute
+		if ply:IsMuted() then
+			t = translate.scoreboardActionUnmute
+		end
+		local mute = actions:AddOption( t )
+		mute:SetIcon("icon16/sound_mute.png")
+		function mute:DoClick()
+			if IsValid(ply) then
+				ply:SetMuted(!ply:IsMuted())
 			end
-			local mute = actions:AddOption( t )
-			mute:SetIcon("icon16/sound_mute.png")
-			function mute:DoClick()
-				if IsValid(ply) then
-					ply:SetMuted(!ply:IsMuted())
-				end
-			end
-			local viewProfile = actions:AddOption(translate.scoreboardActionViewProfile)
-			viewProfile:SetIcon("icon16/user_gray.png")
-			function viewProfile:DoClick()
-				if IsValid(ply) then
-					ply:ShowProfile()
-				end
+		end
+		local viewProfile = actions:AddOption(translate.scoreboardActionViewProfile)
+		viewProfile:SetIcon("icon16/user_gray.png")
+		function viewProfile:DoClick()
+			if IsValid(ply) then
+				ply:ShowProfile()
 			end
 		end
 	end
-	
-	if IsValid(LocalPlayer()) && LocalPlayer():IsAdmin() then
+
+	if IsValid(LocalPlayer()) and LocalPlayer():IsAdmin() then
 		actions:AddSpacer()
 
 		if ply:Team() == 2 then
@@ -150,7 +146,7 @@ local function doPlayerItems(self, mlist, pteam)
 			del = true
 		end
 	end
-	// make sure the rest of the elements are moved up
+	-- make sure the rest of the elements are moved up
 	if del then
 		timer.Simple(0, function() mlist:GetCanvas():InvalidateLayout() end)
 	end
@@ -158,25 +154,25 @@ end
 
 local function makeTeamList(parent, pteam)
 	local mlist
-	local chaos
+	-- local chaos
 	local pnl = vgui.Create("DPanel", parent)
 	pnl:DockPadding(8,8,8,8)
-	function pnl:Paint(w, h) 
+	function pnl:Paint(w, h)
 		surface.SetDrawColor(Color(50,50,50,255))
 		surface.DrawRect(2, 2, w - 4, h - 4)
 	end
 
 	function pnl:Think()
-		if !self.RefreshWait || self.RefreshWait < CurTime() then
+		if !self.RefreshWait or self.RefreshWait < CurTime() then
 			self.RefreshWait = CurTime() + 0.1
 			doPlayerItems(self, mlist, pteam)
 
-			// update chaos/control
-			if pteam == 2 then
-				-- chaos:SetText("Control: " .. GAMEMODE:GetControl())
-			else
-				-- chaos:SetText("Chaos: " .. GAMEMODE:GetChaos())
-			end
+			-- -- update chaos/control
+			-- if pteam == 2 then
+			-- 	-- chaos:SetText("Control: " .. GAMEMODE:GetControl())
+			-- else
+			-- 	-- chaos:SetText("Chaos: " .. GAMEMODE:GetChaos())
+			-- end
 		end
 	end
 
@@ -241,7 +237,7 @@ local function makeTeamList(parent, pteam)
 	mlist = vgui.Create("DScrollPanel", pnl)
 	mlist:Dock(FILL)
 
-	// child positioning
+	-- child positioning
 	local canvas = mlist:GetCanvas()
 	function canvas:OnChildAdded( child )
 		child:Dock( TOP )
@@ -298,7 +294,7 @@ function GM:ScoreboardShow()
 
 		function menu.Credits:PerformLayout()
 			surface.SetFont(name:GetFont())
-			local w,h = surface.GetTextSize(name:GetText())
+			local _w, h = surface.GetTextSize(name:GetText())
 			self:SetTall(h)
 		end
 

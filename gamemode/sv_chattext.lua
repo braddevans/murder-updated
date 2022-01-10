@@ -72,7 +72,7 @@ end
 
 util.AddNetworkString("msg_clients")
 
-local meta = table.Copy(meta)
+-- local meta = table.Copy(meta) --why?
 
 function meta:NetConstructMsg()
 	net.Start("msg_clients")

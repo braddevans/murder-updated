@@ -20,11 +20,11 @@ include("cl_halos.lua")
 include("cl_spawns.lua")
 
 GM.Debug = CreateClientConVar( "mu_debug", 0, true, true )
-GM.HaloRender = CreateClientConVar( "mu_halo_render", 1, true, true ) // should we render halos
-GM.HaloRenderLoot = CreateClientConVar( "mu_halo_loot", 1, true, true ) // shouuld we render loot halos
-GM.HaloRenderKnife = CreateClientConVar( "mu_halo_knife", 1, true, true ) // shouuld we render murderer's knife halos
+GM.HaloRender = CreateClientConVar( "mu_halo_render", 1, true, true ) -- should we render halos
+GM.HaloRenderLoot = CreateClientConVar( "mu_halo_loot", 1, true, true ) -- shouuld we render loot halos
+GM.HaloRenderKnife = CreateClientConVar( "mu_halo_knife", 1, true, true ) -- shouuld we render murderer's knife halos
 
-function GM:Initialize() 
+function GM:Initialize()
 	self:FootStepsInit()
 end
 
@@ -49,18 +49,18 @@ function GM:Think()
 				ply.FogEmitter:SetPos(pos)
 				ply.FogNextPart = CurTime() + math.Rand(0.01, 0.03)
 				local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
-				local pos = ply:LocalToWorld(vec)
-				local particle = ply.FogEmitter:Add( "particle/snow.vmt", pos)
+				local fog_pos = ply:LocalToWorld(vec)
+				local particle = ply.FogEmitter:Add( "particle/snow.vmt", fog_pos)
 				particle:SetVelocity(  Vector(0,0, 4) + VectorRand() * 3 )
 				particle:SetDieTime( 5 )
 				particle:SetStartAlpha( 180 )
 				particle:SetEndAlpha( 0 )
 				particle:SetStartSize( 6 )
-				particle:SetEndSize( 7 )   
+				particle:SetEndSize( 7 )
 				particle:SetRoll( 0 )
 				particle:SetRollDelta( 0 )
 				particle:SetColor( 0, 0, 0 )
-				//particle:SetGravity( Vector( 0, 0, 10 ) )
+				--particle:SetGravity( Vector( 0, 0, 10 ) )
 			end
 		else
 			if ply.FogEmitter then
@@ -71,7 +71,7 @@ function GM:Think()
 		end
 	end
 
-	// clean up old fog emitters
+	-- clean up old fog emitters
 	for ply, emitter in pairs(self.FogEmitters) do
 		if !IsValid(ply) || !ply:IsPlayer() then
 			emitter:Finish()

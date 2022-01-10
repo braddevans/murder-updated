@@ -20,17 +20,17 @@ local function getSelected()
 	local sw,sh = ScrW(), ScrH()
 	local total = #ments
 	local w = math.min(sw * 0.45, sh * 0.45)
-	local h = w
+	-- local h = w
 	local sx, sy = sw / 2, sh / 2
 	local x2,y2 = mx - sx, my - sy
 	local ang = 0
 	local dis = math.sqrt(x2 ^ 2 + y2 ^ 2)
 	if dis / w <= 1 then
-		if y2 <= 0 && x2 <= 0 then
+		if y2 <= 0 and x2 <= 0 then
 			ang = math.acos(x2 / dis)
-		elseif x2 > 0 && y2 <= 0 then
+		elseif x2 > 0 and y2 <= 0 then
 			ang = -math.asin(y2 / dis)
-		elseif x2 <= 0 && y2 > 0 then
+		elseif x2 <= 0 and y2 > 0 then
 			ang = math.asin(y2 / dis) + math.pi
 		else
 			ang = math.pi * 2 - math.acos(x2 / dis)
@@ -42,10 +42,8 @@ end
 function GM:RadialMousePressed(code, vec)
 	if radialOpen then
 		local selected = getSelected()
-		if selected && selected > 0 && code == MOUSE_LEFT then
-			if selected && ments[selected] then
-				RunConsoleCommand("mu_taunt", ments[selected].Code)
-			end
+		if selected and selected > 0 and code == MOUSE_LEFT and (selected and ments[selected]) then
+			RunConsoleCommand("mu_taunt", ments[selected].Code)
 		end
 		self:CloseRadialMenu()
 	end
@@ -60,7 +58,7 @@ local function addElement(transCode, code)
 end
 
 concommand.Add("+menu", function (client, com, args, full)
-	if client:Alive() && client:Team() == 2 then
+	if client:Alive() and client:Team() == 2 then
 		elements = {}
 		addElement("Help", "help")
 		addElement("Funny", "funny")
@@ -101,13 +99,13 @@ function GM:DrawRadialMenu()
 			for i = 0, max do
 				local vx, vy = math.cos((math.pi * 2) * i / max), math.sin((math.pi * 2) * i / max)
 
-				table.insert(circleVertex, {x = sx + w* 1 * vx, y= sy + h* 1 * vy})
+				table.insert(circleVertex, {x = sx + w * 1 * vx, y = sy + h * 1 * vy})
 			end
 		end
 
 		surface.SetTexture(tex)
 		local defaultTextCol = color_white
-		if selected <= 0 || selected ~= selected then
+		if selected <= 0 or selected ~= selected then
 			surface.SetDrawColor(20,20,20,180)
 		else
 			surface.SetDrawColor(20,20,20,120)
@@ -127,7 +125,7 @@ function GM:DrawRadialMenu()
 			if selected == k then
 				local vertexes = prevSelectedVertex
 
-				if prevSelected != selected then
+				if prevSelected ~= selected then
 					prevSelected = selected
 					vertexes = {}
 					prevSelectedVertex = vertexes
@@ -135,17 +133,17 @@ function GM:DrawRadialMenu()
 
 					table.insert(vertexes, {x = sx, y = sy})
 
-					table.insert(vertexes, {x = sx + w* 1 * lx2, y= sy + h* 1 * ly2})
+					table.insert(vertexes, {x = sx + w * 1 * lx2, y = sy + h * 1 * ly2})
 
 					local max = math.floor(50 / total)
 					for i = 0, max do
 						local addv = (add - add2) * i / max + add2
 						local vx, vy = math.cos((k - 1) / total * math.pi * 2 + addv), math.sin((k - 1) / total * math.pi * 2 + addv)
 
-						table.insert(vertexes, {x = sx + w* 1 * vx, y= sy + h* 1 * vy})
+						table.insert(vertexes, {x = sx + w * 1 * vx, y = sy + h * 1 * vy})
 					end
 
-					table.insert(vertexes, {x = sx + w* 1 * lx, y= sy + h* 1 * ly})
+					table.insert(vertexes, {x = sx + w * 1 * lx, y = sy + h * 1 * ly})
 
 				end
 

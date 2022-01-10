@@ -18,10 +18,8 @@ function GM:FlashlightThink()
 end
 
 function GM:PlayerSwitchFlashlight(ply, turningOn)
-	if turningOn then
-		if ply.FlashlightPenalty && ply.FlashlightPenalty > CurTime() then
-			return false
-		end
+	if turningOn and (ply.FlashlightPenalty and ply.FlashlightPenalty > CurTime()) then
+		return false
 	end
 	return true
 end

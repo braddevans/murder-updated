@@ -20,13 +20,13 @@ end
 
 function PlayerMeta:SetMurdererRevealed(bool)
 	self:SetNWBool("MurdererFog", bool)
-	if bool then
-		if !self.MurdererRevealed then
-		end
-	else
-		if self.MurdererRevealed then
-		end
-	end
+	-- if bool then
+	-- 	if !self.MurdererRevealed then
+	-- 	end
+	-- else
+	-- 	if self.MurdererRevealed then
+	-- 	end
+	-- end
 	self.MurdererRevealed = bool
 end
 

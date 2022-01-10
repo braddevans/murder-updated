@@ -7,9 +7,9 @@ function GM:FootstepsOnFootstep(ply, pos, foot, sound, volume, filter)
 	net.WriteVector(pos)
 	net.WriteAngle(ply:GetAimVector():Angle())
 	local tab = {}
-	for k, ply in pairs(player.GetAll()) do
-		if self:CanSeeFootsteps(ply) then
-			table.insert(tab, ply)
+	for k, plyr in pairs(player.GetAll()) do
+		if self:CanSeeFootsteps(plyr) then
+			table.insert(tab, plyr)
 		end
 	end
 	net.Send(tab)

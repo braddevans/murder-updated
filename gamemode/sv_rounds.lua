@@ -55,15 +55,15 @@ end
 function GM:RoundThink()
 	local players = team.GetPlayers(2)
 	if self.RoundStage == self.Round.NotEnoughPlayers then
-		if #players > 1 && (!self.LastPlayerSpawn || self.LastPlayerSpawn + 1 < CurTime()) then 
+		if #players > 1 and (!self.LastPlayerSpawn or self.LastPlayerSpawn + 1 < CurTime()) then
 			self.StartNewRoundTime = CurTime() + self.DelayAfterEnoughPlayers:GetFloat()
 			self:SetRound(self.Round.RoundStarting)
 		end
 	elseif self.RoundStage == self.Round.Playing then
-		if !self.RoundLastDeath || self.RoundLastDeath < CurTime() then
+		if !self.RoundLastDeath or self.RoundLastDeath < CurTime() then
 			self:RoundCheckForWin()
 		end
-		if self.RoundUnFreezePlayers && self.RoundUnFreezePlayers < CurTime() then
+		if self.RoundUnFreezePlayers and self.RoundUnFreezePlayers < CurTime() then
 			self.RoundUnFreezePlayers = nil
 			for k, ply in pairs(players) do
 				if ply:Alive() then
@@ -72,19 +72,19 @@ function GM:RoundThink()
 				end
 			end
 		end
-		// after x minutes without a kill reveal the murderer
+		-- after x minutes without a kill reveal the murderer
 		local time = self.MurdererFogTime:GetFloat()
 		time = math.max(0, time)
 
-		if time > 0 && self.MurdererLastKill && self.MurdererLastKill + time < CurTime() then
+		if time > 0 and self.MurdererLastKill and self.MurdererLastKill + time < CurTime() then
 			local murderer
-			local players = team.GetPlayers(2)
+			players = team.GetPlayers(2)
 			for k,v in pairs(players) do
 				if v:GetMurderer() then
 					murderer = v
 				end
 			end
-			if murderer && !murderer:GetMurdererRevealed() then
+			if murderer and !murderer:GetMurdererRevealed() then
 				murderer:SetMurdererRevealed(true)
 				self.MurdererLastKill = nil
 			end
@@ -101,19 +101,19 @@ function GM:RoundThink()
 		elseif CurTime() >= self.StartNewRoundTime then
 			self:StartNewRound()
 		end
-	end	
+	end
 end
 
 function GM:RoundCheckForWin()
 	local murderer
 	local players = team.GetPlayers(2)
-	if #players <= 0 then 
+	if #players <= 0 then
 		self:SetRound(0)
-		return 
+		return
 	end
 	local survivors = {}
 	for k,v in pairs(players) do
-		if v:Alive() && !v:GetMurderer() then
+		if v:Alive() and !v:GetMurderer() then
 			table.insert(survivors, v)
 		end
 		if v:GetMurderer() then
@@ -121,25 +121,25 @@ function GM:RoundCheckForWin()
 		end
 	end
 
-	// check we have a murderer
+	-- check we have a murderer
 	if !IsValid(murderer) then
 		self:EndTheRound(3, murderer)
 		return
 	end
 
-	// has the murderer killed everyone?
+	-- has the murderer killed everyone?
 	if #survivors < 1 then
 		self:EndTheRound(1, murderer)
 		return
 	end
 
-	// is the murderer dead?
+	-- is the murderer dead?
 	if !murderer:Alive() then
 		self:EndTheRound(2, murderer)
 		return
 	end
 
-	// keep playing.
+	-- keep playing.
 end
 
 
@@ -149,9 +149,9 @@ function GM:DoRoundDeaths(dead, attacker)
 	end
 end
 
-// 1 Murderer wins
-// 2 Murderer loses
-// 3 Murderer rage quit
+-- 1 Murderer wins
+-- 2 Murderer loses
+-- 3 Murderer rage quit
 function GM:EndTheRound(reason, murderer)
 	if self.RoundStage != self.Round.Playing then return end
 
@@ -221,7 +221,7 @@ function GM:EndTheRound(reason, murderer)
 	net.Broadcast()
 
 	for k, ply in pairs(players) do
-		if !ply.HasMoved && !ply.Frozen && self.AFKMoveToSpec:GetBool() then
+		if !ply.HasMoved and !ply.Frozen and self.AFKMoveToSpec:GetBool() then
 			local oldTeam = ply:Team()
 			ply:SetTeam(1)
 			GAMEMODE:PlayerOnChangeTeam(ply, 1, oldTeam)
@@ -248,19 +248,17 @@ function GM:EndTheRound(reason, murderer)
 	hook.Run("OnEndRoundResult", reason)
 	self.RoundCount = self.RoundCount + 1
 	local limit = self.RoundLimit:GetInt()
-	if limit > 0 then
-		if self.RoundCount >= limit then
-			self:ChangeMap()
-			self:SetRound(4)
-			return
-		end
+	if limit > 0 and self.RoundCount >= limit then
+		self:ChangeMap()
+		self:SetRound(4)
+		return
 	end
 	self:SetRound(2)
 end
 
 function GM:StartNewRound()
 	local players = team.GetPlayers(2)
-	if #players <= 1 then 
+	if #players <= 1 then
 		local ct = ChatText()
 		ct:Add(translate.minimumPlayers, Color(255, 150, 50))
 		ct:SendAll()
@@ -274,7 +272,7 @@ function GM:StartNewRound()
 
 	self.RoundUnFreezePlayers = CurTime() + 10
 
-	local players = team.GetPlayers(2)
+	players = team.GetPlayers(2)
 	for k,ply in pairs(players) do
 		ply:UnSpectate()
 	end
@@ -282,21 +280,12 @@ function GM:StartNewRound()
 	self:InitPostEntityAndMapCleanup()
 	self:ClearAllFootsteps()
 
-
-
-	local oldMurderer
-	for k,v in pairs(players) do
-		if v:GetMurderer() then
-			oldMurderer = v
-		end
-	end
-	
 	local murderer
 
-	// get the weight multiplier
+	-- get the weight multiplier
 	local weightMul = self.MurdererWeight:GetFloat()
 
-	// pick a random murderer, weighted
+	-- pick a random murderer, weighted
 	local rand = WeightedRandom()
 	for k, ply in pairs(players) do
 		rand:Add(ply.MurdererChance ^ weightMul, ply)
@@ -304,8 +293,8 @@ function GM:StartNewRound()
 	end
 	murderer = rand:Roll()
 
-	// allow admins to specify next murderer
-	if self.ForceNextMurderer && IsValid(self.ForceNextMurderer) && self.ForceNextMurderer:Team() == 2 then
+	-- allow admins to specify next murderer
+	if self.ForceNextMurderer and IsValid(self.ForceNextMurderer) and self.ForceNextMurderer:Team() == 2 then
 		murderer = self.ForceNextMurderer
 		self.ForceNextMurderer = nil
 	end
@@ -352,10 +341,8 @@ function GM:PlayerLeavePlay(ply)
 		ply:DropWeapon(ply:GetWeapon("weapon_mu_magnum"))
 	end
 
-	if self.RoundStage == 1 then
-		if ply:GetMurderer() then
-			self:EndTheRound(3, ply)
-		end
+	if self.RoundStage == 1 and ply:GetMurderer() then
+		self:EndTheRound(3, ply)
 	end
 end
 
@@ -364,9 +351,9 @@ concommand.Add("mu_forcenextmurderer", function (ply, com, args)
 	if #args < 1 then return end
 
 	local ent = Entity(tonumber(args[1]) or -1)
-	if !IsValid(ent) || !ent:IsPlayer() then 
+	if !IsValid(ent) or !ent:IsPlayer() then
 		ply:ChatPrint("not a player")
-		return 
+		return
 	end
 
 	GAMEMODE.ForceNextMurderer = ent
@@ -381,7 +368,7 @@ end)
 function GM:ChangeMap()
 	if #self.MapList > 0 then
 		if MapVote then
-			// only match maps that we have specified
+			-- only match maps that we have specified
 			local prefix = {}
 			for k, map in pairs(self.MapList) do
 				table.insert(prefix, map .. "%.bsp$")
@@ -395,7 +382,7 @@ end
 
 function GM:RotateMap()
 	local map = game.GetMap()
-	local index 
+	local index
 	for k, map2 in pairs(self.MapList) do
 		if map == map2 then
 			index = k
@@ -435,7 +422,7 @@ local defaultMapList = {
 
 function GM:SaveMapList()
 
-	// ensure the folders are there
+	-- ensure the folders are there
 	if !file.Exists("murder/","DATA") then
 		file.CreateDir("murder")
 	end
@@ -447,11 +434,10 @@ function GM:SaveMapList()
 	file.Write("murder/maplist.txt", txt)
 end
 
-function GM:LoadMapList() 
+function GM:LoadMapList()
 	local jason = file.ReadDataAndContent("murder/maplist.txt")
 	if jason then
 		local tbl = {}
-		local i = 1
 		for map in jason:gmatch("[^\r\n]+") do
 			table.insert(tbl, map)
 		end

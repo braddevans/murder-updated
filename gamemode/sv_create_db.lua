@@ -2,7 +2,7 @@ function GM:EnsureTablesExist()
 	if (sql.TableExists("mu_maps") && sql.TableExists("mu_models") && sql.TableExists("mu_spawns") && sql.TableExists("mu_loots")) then
 		Msg("tables already exist !")
 	else
-		if (!sql.TableExists("mu_maps")) then // ! = not
+		if (!sql.TableExists("mu_maps")) then --! = not
 			query = "CREATE TABLE mu_maps (	id INTEGER NOT NULL UNIQUE, name TEXT NOT NULL UNIQUE,	PRIMARY KEY(id AUTOINCREMENT))"
 			result = sql.Query(query)
 			if (sql.TableExists("mu_maps")) then
@@ -10,7 +10,7 @@ function GM:EnsureTablesExist()
 			else
 				Msg("Something went wrong with the mu_maps query ! \n")
 				Msg( sql.LastError( result ) .. "\n" )
-			end	
+			end
 		end
 		if (!sql.TableExists("mu_models")) then
 			query = "CREATE TABLE mu_models (id INTEGER NOT NULL UNIQUE, alias TEXT NOT NULL UNIQUE, file	TEXT NOT NULL UNIQUE,PRIMARY KEY(id AUTOINCREMENT))"
@@ -21,7 +21,7 @@ function GM:EnsureTablesExist()
 			else
 				Msg("Something went wrong with the mu_models query ! \n")
 				Msg( sql.LastError( result ) .. "\n" )
-			end	
+			end
 		end
 		if (!sql.TableExists("mu_spawns")) then
 			query = "CREATE TABLE mu_spawns (id INTEGER NOT NULL UNIQUE, map_id INTEGER NOT NULL, x DOUBLE NOT NULL, y DOUBLE NOT NULL, z DOUBLE NOT NULL, FOREIGN KEY(map_id) REFERENCES mu_maps(id), PRIMARY KEY(id AUTOINCREMENT))"
@@ -31,7 +31,7 @@ function GM:EnsureTablesExist()
 			else
 				Msg("Something went wrong with the mu_spawns query ! \n")
 				Msg( sql.LastError( result ) .. "\n" )
-			end	
+			end
 		end
 		if (!sql.TableExists("mu_loots")) then
 			query = "CREATE TABLE mu_loots (id INTEGER NOT NULL UNIQUE, map_id INTEGER NOT NULL, model_id INTEGER NOT NULL, x DOUBLE NOT NULL, y DOUBLE NOT NULL, z DOUBLE NOT NULL, a_x DOUBLE NOT NULL, a_y DOUBLE NOT NULL, a_z DOUBLE NOT NULL, PRIMARY KEY(id AUTOINCREMENT), FOREIGN KEY(map_id) REFERENCES mu_maps(id), FOREIGN KEY(model_id) REFERENCES mu_models(id))"
@@ -41,7 +41,7 @@ function GM:EnsureTablesExist()
 			else
 				Msg("Something went wrong with the mu_loots query ! \n")
 				Msg( sql.LastError( result ) .. "\n" )
-			end	
+			end
 		end
 		-- if (!sql.TableExists("mu_players")) then
 		-- 	-- Create the table here
@@ -79,7 +79,7 @@ function fillDefaultModels()
 			("bananabunch", "models/props/cs_italy/bananna_bunch.mdl"),
 			("banana", "models/props/cs_italy/bananna.mdl"),
 			("orange", "models/props/cs_italy/orange.mdl"),
-			("familyphoto", "models/props_lab/frame002a.mdl")]]
+			("familyphoto", "models/props_	lab/frame002a.mdl")]]
 	result = sql.Query(query)
 	if result ~= false then
 		Msg("Success! Added models to table \n")
@@ -88,6 +88,3 @@ function fillDefaultModels()
 		Msg( sql.LastError( result ) .. "\n" )
 	end
 end
-
-result = sql.Query("SELECT alias,file FROM mu_models")
-PrintTable(result)
