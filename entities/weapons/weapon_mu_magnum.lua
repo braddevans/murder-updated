@@ -56,4 +56,3 @@ function SWEP:DoPrimaryAttackEffect(stats)
 	bullet.Damage = stats.damage or 1
 	self.Owner:FireBullets(bullet)
 end
-	

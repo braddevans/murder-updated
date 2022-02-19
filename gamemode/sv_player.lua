@@ -32,7 +32,7 @@ function GM:PlayerSpawn( ply )
 
 		GAMEMODE:PlayerSpawnAsSpectator( ply )
 		return
-	
+
 	end
 
 	-- Stop observer mode

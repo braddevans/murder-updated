@@ -161,7 +161,7 @@ function PlayerMeta:SetLootCollected(loot)
 	net.Send(self)
 end
 
-local function getLootPrintString(data, plyPos) 
+local function getLootPrintString(data, plyPos)
 	local str = math.Round(data.pos.x) .. "," .. math.Round(data.pos.y) .. "," .. math.Round(data.pos.z) .. " " .. math.Round(data.pos:Distance(plyPos) / 12) .. "ft"
 	str = str .. " " .. data.model
 	return str

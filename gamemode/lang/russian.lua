@@ -1,6 +1,6 @@
 --[[
 Encoding must be UTF-8, or you will get "�".
-	Translated by Fixator10 
+	Translated by Fixator10
 	Updated by berry
 	http://vk.com/fixator10 | http://steamcommunity.com/id/fixator10 | https://telegram.me/fixator10
 	http://steamcommunity.com/profiles/76561198158864042
