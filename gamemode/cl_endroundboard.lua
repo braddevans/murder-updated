@@ -189,3 +189,11 @@ net.Receive("reopen_round_board", function ()
 		menu:SetVisible(true)
 	end
 end)
+
+function GM:CloseEndRoundBoard()
+	if ( IsValid( menu ) ) then menu:Close() end
+end
+
+concommand.Add( "+menu_context", function()
+	hook.Run( "CloseEndRoundBoard" )
+end)
