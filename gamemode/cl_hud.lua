@@ -48,6 +48,14 @@ surface.CreateFont( "MersDeathBig" , {
 	italic = false
 })
 
+surface.CreateFont( "TimerText" , {
+	font = "closecaption_bold",
+	size = math.ceil(baseSize),
+	weight = 500,
+	antialias = true,
+	italic = false
+})
+
 local function drawTextShadow(t,f,x,y,c,px,py)
 	color_black.a = c.a
 	draw.SimpleText(t,f,x + 1,y + 1,color_black,px,py)
@@ -56,7 +64,7 @@ local function drawTextShadow(t,f,x,y,c,px,py)
 end
 
 
-local healthCol = Color(120,255,20)
+-- local healthCol = Color(120,255,20)
 function GM:HUDPaint()
 	local round = self:GetRound()
 	local client = LocalPlayer()
@@ -66,7 +74,7 @@ function GM:HUDPaint()
 	elseif round == 5 then
 		if self.StartNewRoundTime then
 			local seconds = math.ceil(self.StartNewRoundTime - CurTime())
-			if seconds <= 0 then 
+			if seconds <= 0 then
 				seconds = 0
 			end
 			drawTextShadow(Translator:QuickVar(translate.roundStartsInTime, "seconds", tostring(seconds)), "MersRadial", ScrW() / 2, ScrH() - 10, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
@@ -82,15 +90,15 @@ function GM:HUDPaint()
 		else
 
 			if round == 1 then
-				if self.RoundStart && self.RoundStart + 10 > CurTime() then
+				if self.RoundStart and self.RoundStart + 10 > CurTime() then
 					self:DrawStartRoundInformation()
 				else
 					self:DrawGameHUD(LocalPlayer())
 				end
 			elseif round == 2 then
-				// display who won
+				-- display who won
 				self:DrawGameHUD(LocalPlayer())
-			else // round = 0
+			-- else -- round = 0
 
 			end
 
@@ -177,10 +185,10 @@ function GM:DrawGameHUD(ply)
 
 	local shouldDraw = hook.Run("HUDShouldDraw", "MurderMurdererFog")
 	if shouldDraw != false then
-		if LocalPlayer() == ply && ply:GetNWBool("MurdererFog") && self:GetAmMurderer() then
+		if LocalPlayer() == ply and ply:GetNWBool("MurdererFog") and self:GetAmMurderer() then
 			surface.SetDrawColor(10,10,10,50)
 			surface.DrawRect(-1, -1, ScrW() + 2, ScrH() + 2)
-		
+
 			drawTextShadow(translate.murdererFog, "MersRadial", ScrW() * 0.5, ScrH() - 80, Color(90,20,20), 1, TEXT_ALIGN_CENTER)
 			drawTextShadow(translate.murdererFogSub, "MersRadialSmall", ScrW() * 0.5, ScrH() - 50, Color(130,130,130), 1, TEXT_ALIGN_CENTER)
 		end
@@ -193,23 +201,23 @@ function GM:DrawGameHUD(ply)
 	-- drawTextShadow(health, "MersRadialBig", 20 + w + 10, ScrH() - 10 + 3, healthCol, 0, TEXT_ALIGN_BOTTOM)
 
 	local tr = ply:GetEyeTraceNoCursor()
-	
+
 	local shouldDraw = hook.Run("HUDShouldDraw", "MurderTraitorButton")
 	if shouldDraw != false then
 		if self:GetAmMurderer() then
-			// find closest button to cursor with usable range
+			-- find closest button to cursor with usable range
 			local dis, dot, but
 			for k, lbut in pairs(ents.FindByClass("ttt_traitor_button")) do
 				local vec = lbut:GetPos() - ply:GetShootPos()
 				local ldis, ldot = vec:Length(), vec:GetNormal():Dot(ply:GetAimVector())
-				if (ldis < lbut:GetUsableRange() && ldot > 0.95) && (!but || ldot > dot) then
+				if (ldis < lbut:GetUsableRange() and ldot > 0.95) and (!but or ldot > dot) then
 					dis = ldis
 					dot = ldot
 					but = lbut
 				end
 			end
-			
-			// draw the friggen button with excessive text
+
+			-- draw the friggen button with excessive text
 			if but then
 				local sp = but:GetPos():ToScreen()
 				if sp.visible then
@@ -232,9 +240,9 @@ function GM:DrawGameHUD(ply)
 						text = Translator:VarTranslate(translate.ttt_tbut_retime, {num = but:GetDelay()})
 					end
 					drawTextShadow(text, "MersText1", sp.x, sp.y + fh, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-					
+
 					local key = input.LookupBinding("use")
-					if key && but:GetNextUseTime() <= CurTime() then
+					if key and but:GetNextUseTime() <= CurTime() then
 						text = Translator:VarTranslate(translate.ttt_tbut_help, {key = key:upper()})
 						drawTextShadow(text, "MersText1", sp.x, sp.y + ft + fh, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 					end
@@ -245,12 +253,12 @@ function GM:DrawGameHUD(ply)
 
 	local shouldDraw = hook.Run("HUDShouldDraw", "MurderPlayerNames")
 	if shouldDraw != false then
-		// draw names
-		if IsValid(tr.Entity) && (tr.Entity:IsPlayer() || tr.Entity:GetClass() == "prop_ragdoll") && tr.HitPos:Distance(tr.StartPos) < 500 then
+		-- draw names
+		if IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:GetClass() == "prop_ragdoll") and tr.HitPos:Distance(tr.StartPos) < 500 then
 			self.LastLooked = tr.Entity
 			self.LookedFade = CurTime()
 		end
-		if IsValid(self.LastLooked) && self.LookedFade + 2 > CurTime() then
+		if IsValid(self.LastLooked) and self.LookedFade + 2 > CurTime() then
 			local name = self.LastLooked:GetBystanderName() or "error"
 			local col = self.LastLooked:GetPlayerColor() or Vector()
 			col = Color(col.x * 255, col.y * 255, col.z * 255)
@@ -261,27 +269,27 @@ function GM:DrawGameHUD(ply)
 
 	local shouldDraw = hook.Run("HUDShouldDraw", "MurderDisguise")
 	if shouldDraw != false then
-		if self:GetAmMurderer() && self.LootCollected && self.LootCollected >= 1 then
-			if IsValid(tr.Entity) && tr.Entity:GetClass() == "prop_ragdoll" && tr.HitPos:Distance(tr.StartPos) < 80 then
-				if tr.Entity:GetBystanderName() != ply:GetBystanderName() || colorDif(tr.Entity:GetPlayerColor(), ply:GetPlayerColor()) > 0.1 then 
+		if self:GetAmMurderer() and self.LootCollected and self.LootCollected >= 1 then
+			if IsValid(tr.Entity) and tr.Entity:GetClass() == "prop_ragdoll" and tr.HitPos:Distance(tr.StartPos) < 80 then
+				if tr.Entity:GetBystanderName() != ply:GetBystanderName() or colorDif(tr.Entity:GetPlayerColor(), ply:GetPlayerColor()) > 0.1 then
 					local h = draw.GetFontHeight("MersRadial")
 					drawTextShadow(translate.pressEToDisguiseFor1Loot, "MersRadialSmall", ScrW() / 2, ScrH() / 2 + 80 + h * 0.7, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 				end
 			end
 		end
 	end
-	
+
 	local shouldDraw = hook.Run("HUDShouldDraw", "MurderHealthBall")
 	if shouldDraw != false then
-		// setup size
+		-- setup size
 		local size = ScrW() * 0.08
 
-		// draw black circle
+		-- draw black circle
 		surface.SetTexture(tex)
 		surface.SetDrawColor(color_black)
 		surface.DrawTexturedRect( size * 0.1, ScrH() - size * 1.1, size, size)
 
-		// draw health circle
+		-- draw health circle
 		surface.SetTexture(tex)
 		local col = ply:GetPlayerColor()
 		col = Color(col.x * 255, col.y * 255, col.z * 255)
@@ -301,7 +309,7 @@ function GM:DrawGameHUD(ply)
 
 	local shouldDraw = hook.Run("HUDShouldDraw", "MurderFlashlightCharge")
 	if shouldDraw != false then
-		if LocalPlayer() == ply && (ply:FlashlightIsOn() || self:GetFlashlightCharge() < 1) then
+		if LocalPlayer() == ply and (ply:FlashlightIsOn() or self:GetFlashlightCharge() < 1) then
 			local size = ScrW() * 0.08
 			local x = size * 1.2
 
@@ -330,18 +338,50 @@ function GM:DrawGameHUD(ply)
 			surface.DrawTexturedRect(x + bord, ScrH() - h - size * 0.2 + bord, (w - bord * 2) * charge, h - bord * 2)
 		end
 	end
-	
+
 	local shouldDraw = hook.Run("HUDShouldDraw", "MurderPlayerType")
 	if shouldDraw != false then
 		local name = translate.bystander
 		local color = Color(20,120,255)
 
-		if LocalPlayer() == ply && self:GetAmMurderer() then
+		if LocalPlayer() == ply and self:GetAmMurderer() then
 			name = translate.murderer
 			color = Color(190, 20, 20)
 		end
 
 		drawTextShadow(name, "MersRadial", ScrW() - 20, ScrH() - 10, color, 2, TEXT_ALIGN_BOTTOM)
+	end
+
+	local shouldDraw = hook.Run("HUDShouldDraw", "RoundTime")
+	if shouldDraw != false then
+		local max = self.RoundSettings.RoundMaxLength
+		if max != -1 then
+			local time = math.floor(max - self:GetRoundTime())
+			local minutes = 0
+			local seconds = 0
+			local s = ""
+			local font = ""
+
+			if time > 0 then
+				minutes = math.floor(time / 60)
+				seconds = time % 60
+				if minutes == 0 then
+					s = string.format("%d", time)
+				else
+					s = string.format("%d:%02d", minutes, seconds)
+				end
+			else
+				s = 0
+			end
+
+			if baseSize >= 40 then
+				font = "MersRadial"
+			else
+				font = "TimerText"
+			end
+
+			drawTextShadow(s, font, ScrW() - 20, 10, Color(190, 20, 20), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+		end
 	end
 end
 
@@ -354,7 +394,7 @@ function GM:RenderScreenspaceEffects()
 		self:RenderDeathOverlay()
 	end
 
-	if self:GetRound() == 1 && self.RoundStart && self.RoundStart + 10 > CurTime() then
+	if self:GetRound() == 1 and self.RoundStart and self.RoundStart + 10 > CurTime() then
 		local sw, sh = ScrW(), ScrH()
 		surface.SetDrawColor(0,0,0,255)
 		surface.DrawRect(-1,-1,sw + 2,sh + 2)
@@ -383,16 +423,16 @@ function GM:PostDrawHUD()
 end
 
 function GM:HUDShouldDraw( name )
-	// hide health and armor
-	if name == "CHudHealth" || name == "CHudBattery" then
+	-- hide health and armor
+	if name == "CHudHealth" or name == "CHudBattery" then
 		return false
 	end
 
-	// allow weapon hiding
+	-- allow weapon hiding
 	local ply = LocalPlayer()
 	if IsValid(ply) then
 		local wep = ply:GetActiveWeapon()
-		if IsValid(wep) && wep.HUDShouldDraw then
+		if IsValid(wep) and wep.HUDShouldDraw then
 			return wep.HUDShouldDraw(wep, name)
 		end
 	end

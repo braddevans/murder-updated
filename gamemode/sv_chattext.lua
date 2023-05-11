@@ -72,7 +72,7 @@ end
 
 util.AddNetworkString("msg_clients")
 
-local meta = table.Copy(meta)
+local meta = table.Copy(meta) -- Don't comment this out because doing so breaks the gamemode's chat messages
 
 function meta:NetConstructMsg()
 	net.Start("msg_clients")

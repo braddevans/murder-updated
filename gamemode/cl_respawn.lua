@@ -5,15 +5,15 @@ function GM:RenderDeathOverlay()
 
 	if GAMEMODE.SpectateTime > CurTime() then
 
-		// render black screen
+		-- render black screen
 		surface.SetDrawColor(0,0,0,255)
 		surface.DrawRect(-1,-1,sw + 2,sh + 2)
 
 		render.SetColorModulation(1, 1, 1)
 		render.SetBlend(1)
 
-		
-		// render body
+
+		-- render body
 		cam.Start3D( EyePos(), EyeAngles() )
 		cam.IgnoreZ(true)
 		local ent = client:GetRagdollEntity()
@@ -31,11 +31,11 @@ net.Receive("mu_death", function()
 end)
 
 function GM:RenderRespawnText()
-	local client = LocalPlayer()
+	-- local client = LocalPlayer()
 	local sw,sh = ScrW(),ScrH()
-	
+
 	local t = math.max(math.ceil(GAMEMODE.SpectateTime - CurTime()), 0)
-	
+
 	if t <= 0 then
 		self:RenderSpectate()
 	else

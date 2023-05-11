@@ -8,7 +8,7 @@ local function addPart(name, sex)
 	table.insert(GM.BystanderNameParts, tab)
 end
 
-/* Don't add to this list, add names to data/murder/bystander_name_parts.txt */
+-- Don't add to this list, add names to data/murder/bystander_name_parts.txt
 addPart("Alfa")
 addPart("Bravo")
 addPart("Charlie")
@@ -36,12 +36,12 @@ addPart("X-ray")
 addPart("Yankee")
 addPart("Zulu")
 
-local PlayerMeta = FindMetaTable("Player")
+-- local PlayerMeta = FindMetaTable("Player")
 local EntityMeta = FindMetaTable("Entity")
 
 GM.BystanderWords = CreateClientConVar( "mu_bystandername_words", 1, FCVAR_ARCHIVE, "Number of words to generate for bystander name" )
 
-// adds a name to the bystander parts generation table
+-- adds a name to the bystander parts generation table
 function GM:AddBystanderNamePart(name, sex)
 	name = tostring(name)
 	if !name then error("arg 1 must be a string") end
@@ -52,7 +52,7 @@ function GM:AddBystanderNamePart(name, sex)
 	table.insert(self.BystanderNameParts, tab)
 end
 
-// removes a name to the bystander parts generation table
+-- removes a name to the bystander parts generation table
 function GM:RemoveBystanderNamePart(name, sex)
 	for k, v in pairs(self.BystanderNameParts) do
 		if v.name == name && v.sex == sex then
@@ -62,7 +62,7 @@ function GM:RemoveBystanderNamePart(name, sex)
 	end
 end
 
-// returns the bystander parts generation table
+-- returns the bystander parts generation table
 function GM:GetBystanderNameParts()
 	return self.BystanderNameParts
 end
@@ -124,7 +124,7 @@ end
 function EntityMeta:GetBystanderName()
 	local name = self:GetNWString("bystanderName")
 	if !name || name == "" then
-		return "Bystander" 
+		return "Bystander"
 	end
 	return name
 end

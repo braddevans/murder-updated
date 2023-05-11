@@ -15,7 +15,7 @@ local function clearupRagdolls(ragdolls, max)
 		end
 	end
 
-	if max >= 0 && count > max then
+	if max >= 0 and count > max then
 		while true do
 			if count > max then
 				if IsValid(ragdolls[1]) then
@@ -33,31 +33,31 @@ end
 function PlayerMeta:CreateRagdoll(attacker, dmginfo)
 	local ent = self:GetNWEntity("DeathRagdoll")
 
-	// remove old player ragdolls
+	-- remove old player ragdolls
 	if !self.DeathRagdolls then self.DeathRagdolls = {} end
 	local max = hook.Run("MaxDeathRagdollsPerPlayer", self)
 	clearupRagdolls(self.DeathRagdolls, max or 1)
 
-	// remove old server ragdolls
+	-- remove old server ragdolls
 	if !GAMEMODE.DeathRagdolls then GAMEMODE.DeathRagdolls = {} end
-	local max = hook.Run("MaxDeathRagdolls")
+	max = hook.Run("MaxDeathRagdolls")
 	clearupRagdolls(GAMEMODE.DeathRagdolls, max or 1)
 
 	local data = duplicator.CopyEntTable(self)
 	if !util.IsValidRagdoll(data.Model) then
 		data.Model = "models/player/skeleton.mdl"
-		// if use pointshop or something similar to handle character models, just return could be problem with disguise.
+		-- if use pointshop or something similar to handle character models, just return could be problem with disguise.
 	end
 
-	local ent = ents.Create( "prop_ragdoll" )
-	data.ModelScale = 1 // doesn't work on ragdolls
+	ent = ents.Create( "prop_ragdoll" )
+	data.ModelScale = 1 -- doesn't work on ragdolls
 	duplicator.DoGeneric(ent, data)
-	
+
 	self:SetNWEntity("DeathRagdoll", ent )
 	ent:SetNWEntity("RagdollOwner", self)
 	table.insert(self.DeathRagdolls,ent)
 	table.insert(GAMEMODE.DeathRagdolls,ent)
-	
+
 	if ent.SetPlayerColor then
 		ent:SetPlayerColor(self:GetPlayerColor())
 	end
@@ -65,7 +65,7 @@ function PlayerMeta:CreateRagdoll(attacker, dmginfo)
 	hook.Run("PreDeathRagdollSpawn", self, ent)
 	ent:Spawn()
 	ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-	
+
 	hook.Run("OnDeathRagdollCreated", self, ent)
 	ent:Fire("kill", "", 60 * 8)
 

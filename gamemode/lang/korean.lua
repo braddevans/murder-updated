@@ -15,7 +15,7 @@ pt.teamAss = "케이크"
 pt.killedTeamKill = "{player} 님이 무고한 시민을 죽였습니다."
 pt.killedMurderer = "{player} 님이 살인마를 죽였습니다."
 
-pt.murdererDeathUnknown = "살인마가 알수없는 이유로 죽었습니다." 
+pt.murdererDeathUnknown = "살인마가 알수없는 이유로 죽었습니다."
 
 pt.changeTeam = "{player} 님께서 {team} 팀으로 팀을 옮겼습니다."
 pt.teamMoved = "{player} 님이 {team} 팀으로 옮겨졌습니다. "

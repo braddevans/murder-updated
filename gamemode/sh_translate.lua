@@ -1,4 +1,4 @@
-// translate
+-- translate
 
 Translator = {}
 Translator.languages = {}
@@ -62,7 +62,7 @@ function Translator:ChangeLanguage(lang)
 	end
 end
 
-local files, dirs = file.Find(rootFolder .. "lang/*", "LUA")
+local files, _dirs = file.Find(rootFolder .. "lang/*", "LUA")
 for k, v in pairs(files) do
 	AddCSLuaFile(rootFolder .. "lang/" .. v)
 	local name = v:sub(1, -5)
@@ -128,9 +128,9 @@ function Translator:Translate(languageTable, names)
 end
 
 
-// translation convience funcitons
+-- translation convience funcitons
 
-// replaces a phrases {variables} with replacements in reptable
+-- replaces a phrases {variables} with replacements in reptable
 function Translator:VarTranslate(s, reptable)
 	for k, v in pairs(reptable) do
 		s = s:gsub("{" .. k .. "}", v)
@@ -143,8 +143,8 @@ function Translator:QuickVar(s, k, v)
 	return s
 end
 
-// replaces {variables} with replacements but outputed in a table to allow additional formatting like colors
-// used for ChatText(msgs)
+-- replaces {variables} with replacements but outputed in a table to allow additional formatting like colors
+-- used for ChatText(msgs)
 function Translator:AdvVarTranslate(phrase, replacements)
 	local out = {}
 	local s = phrase
@@ -159,7 +159,7 @@ function Translator:AdvVarTranslate(phrase, replacements)
 				table.insert(out, rep or {text = "{" .. b .. "}"})
 			else
 				local rep = replacements[b] or "{" .. b .. "}"
-				local col
+
 				if type(rep) == "function" then
 					table.insert(out, rep(b))
 				elseif type(rep) == "table" then
@@ -177,7 +177,7 @@ function Translator:AdvVarTranslate(phrase, replacements)
 	return out
 end
 
-// the actual translator
+-- the actual translator
 local tmeta = {}
 local function get(args)
 	local a = Translator:Translate(Translator:GetLanguageTable(), args)
@@ -185,12 +185,13 @@ local function get(args)
 		return a
 	end
 
-	// default to english if we don't have the translation
-	local a = Translator:Translate(Translator:GetEnglishTable(), args)
+	-- default to english if we don't have the translation
+	a = Translator:Translate(Translator:GetEnglishTable(), args)
 	if a != nil then
 		return a
 	end
 end
+
 local function trans(self, ...)
 	local args = {...}
 	local a = get(args)
@@ -203,11 +204,10 @@ local function trans(self, ...)
 	end
 	return "<no-trans>"
 end
+
 tmeta.__index = trans
 tmeta.__call = trans
-tmeta.__newindex = function (self, key, value)
-	
-end
+tmeta.__newindex = function (self, key, value) end
 
 local tablemeta = {}
 local function transtable(self, ...)
@@ -219,9 +219,7 @@ local function transtable(self, ...)
 end
 tablemeta.__index = transtable
 tablemeta.__call = transtable
-tablemeta.__newindex = function (self, key, value)
-	
-end
+tablemeta.__newindex = function (self, key, value) end
 
 translate = {}
 translate.table = {}
